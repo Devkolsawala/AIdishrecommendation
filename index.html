@@ -12,49 +12,73 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffd93d 0%, #ffb74d 50%, #ff8f00 100%);
             min-height: 100vh;
-            color: #333;
+            color: #2c2c2c;
         }
 
         .header {
             background: rgba(255, 255, 255, 0.95);
-            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(255, 193, 7, 0.3);
             position: sticky;
             top: 0;
             z-index: 100;
+            border-bottom: 3px solid #ffc107;
         }
 
         .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #c0392b;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ff8f00, #ffc107);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(255, 193, 7, 0.3);
         }
 
         .ai-btn {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            background: linear-gradient(45deg, #ff8f00, #ffc107);
             color: white;
             border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 25px;
+            padding: 1rem 2rem;
+            border-radius: 30px;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .ai-btn:hover::before {
+            left: 100%;
         }
 
         .ai-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.5);
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
         }
@@ -63,210 +87,319 @@
             text-align: center;
             color: white;
             margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         .welcome-section h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            font-weight: 800;
+            background: linear-gradient(45deg, #fff, #fffde7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .welcome-section p {
-            font-size: 1.2rem;
-            opacity: 0.9;
+            font-size: 1.3rem;
+            opacity: 0.95;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
             margin-top: 2rem;
         }
 
         .dish-card {
             background: white;
-            border-radius: 15px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 193, 7, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            border: 3px solid transparent;
+        }
+
+        .dish-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #ffc107, #ff8f00, #ffeb3b);
+            border-radius: 20px;
+            padding: 3px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .dish-card:hover::before {
+            opacity: 1;
         }
 
         .dish-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 193, 7, 0.3);
         }
 
         .dish-image {
             width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: linear-gradient(45deg, #ffa726, #ff7043);
+            height: 220px;
+            background: linear-gradient(135deg, #ffeb3b, #ffc107, #ff8f00);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
+            font-size: 4rem;
             color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dish-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s infinite linear;
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .dish-info {
-            padding: 1.5rem;
+            padding: 2rem;
+            background: white;
         }
 
         .dish-name {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 1rem;
+            line-height: 1.3;
         }
 
         .dish-type {
             display: inline-block;
-            background: #3498db;
+            background: linear-gradient(45deg, #ff8f00, #ffc107);
             color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            margin-right: 0.5rem;
-            margin-bottom: 0.8rem;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.8rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(255, 193, 7, 0.3);
         }
 
         .gravy-type {
             display: inline-block;
-            background: #e74c3c;
+            background: linear-gradient(45deg, #ff6f00, #ff8f00);
             color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            margin-bottom: 0.8rem;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(255, 111, 0, 0.3);
         }
 
         .dish-description {
-            color: #7f8c8d;
-            line-height: 1.6;
+            color: #666;
+            line-height: 1.7;
+            font-size: 1rem;
         }
 
         /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
-            z-index: 200;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
         }
 
         .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 2rem;
-            border-radius: 20px;
+            background: white;
+            margin: 3% auto;
+            padding: 3rem;
+            border-radius: 25px;
             width: 90%;
-            max-width: 500px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: slideIn 0.3s ease-out;
+            max-width: 600px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 4px solid #ffc107;
+            position: relative;
         }
 
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes modalSlideIn {
+            from { 
+                transform: translateY(-100px) scale(0.8); 
+                opacity: 0; 
+            }
+            to { 
+                transform: translateY(0) scale(1); 
+                opacity: 1; 
+            }
         }
 
         .close {
-            color: #aaa;
+            color: #ff8f00;
             float: right;
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: bold;
             cursor: pointer;
             line-height: 1;
+            transition: all 0.3s;
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
         }
 
         .close:hover {
-            color: #c0392b;
+            color: #ff6f00;
+            transform: scale(1.2);
         }
 
         .modal h2 {
-            color: #c0392b;
-            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #ff8f00, #ffc107);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
             text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-            color: #2c3e50;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: #2c2c2c;
+            font-size: 1.1rem;
         }
 
         .form-group select {
             width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #ecf0f1;
-            border-radius: 10px;
+            padding: 1rem;
+            border: 3px solid #ffe0b2;
+            border-radius: 15px;
             font-size: 1rem;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            color: #2c2c2c;
         }
 
         .form-group select:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: #ffc107;
+            box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.2);
+            transform: translateY(-2px);
         }
 
         .submit-btn {
             width: 100%;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #ff8f00, #ffc107);
             color: white;
             border: none;
-            padding: 1rem;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: bold;
+            padding: 1.2rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
         }
 
         .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.5);
         }
 
         .results {
-            margin-top: 2rem;
+            margin-top: 2.5rem;
         }
 
         .results h3 {
-            color: #2c3e50;
-            margin-bottom: 1rem;
+            color: #2c2c2c;
+            margin-bottom: 1.5rem;
             text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
         .recommendation {
-            background: linear-gradient(45deg, #a8edea, #fed6e3);
-            padding: 1rem;
-            margin: 0.5rem 0;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #fffde7, #fff8e1);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 15px;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
+            border: 2px solid rgba(255, 193, 7, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.1);
+        }
+
+        .recommendation:hover {
+            transform: translateX(10px);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.2);
+            border-color: #ffc107;
         }
 
         .recommendation-image {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #ffa726, #ff7043);
+            background: linear-gradient(45deg, #ffeb3b, #ffc107);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 2rem;
             flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
         }
 
         .recommendation-info {
@@ -274,14 +407,38 @@
         }
 
         .recommendation-name {
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 0.3rem;
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
         }
 
         .recommendation-desc {
-            color: #7f8c8d;
-            font-size: 0.9rem;
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #ffe0b2;
+            border-top: 4px solid #ffc107;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
@@ -292,34 +449,63 @@
             }
 
             .logo {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
+            }
+
+            .welcome-section {
+                padding: 1.5rem;
             }
 
             .welcome-section h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
 
             .menu-grid {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
 
             .modal-content {
                 margin: 10% auto;
                 width: 95%;
+                padding: 2rem;
             }
+
+            .dish-image {
+                height: 180px;
+                font-size: 3rem;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 193, 7, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #ffc107, #ff8f00);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #ff8f00, #ff6f00);
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="logo">🍳 Andaaz Cafe</div>
-        <button class="ai-btn" onclick="openModal()">🤖 Get AI Recommendation</button>
+        <button class="ai-btn" onclick="openModal()"> Get AI Recommendations</button>
     </div>
 
     <div class="container">
         <div class="welcome-section">
             <h1>Welcome to Andaaz Cafe</h1>
-            <p>Discover our delicious egg-based dishes with AI-powered recommendations</p>
+            <p>Discover our delicious egg-based dishes with AI-powered recommendations tailored just for you</p>
         </div>
 
         <div id="menuContainer" class="menu-grid">
@@ -331,11 +517,11 @@
     <div id="recommendModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2>🤖 AI Dish Recommendation</h2>
+            <h2>AI Dish Recommendations</h2>
             
             <form id="recommendForm">
                 <div class="form-group">
-                    <label for="food_type">Type of Food:</label>
+                    <label for="food_type">🍽️ Type of Food:</label>
                     <select name="food_type" id="food_type">
                         <option value="any">Any</option>
                         <option value="Curry">Curry</option>
@@ -348,7 +534,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="gravy_color">Gravy Color:</label>
+                    <label for="gravy_color">🎨 Gravy Color:</label>
                     <select name="gravy_color" id="gravy_color">
                         <option value="any">Any</option>
                         <option value="Red">Red</option>
@@ -359,23 +545,74 @@
                     </select>
                 </div>
 
-                <button type="submit" class="submit-btn">Get My Recommendations</button>
+                <button type="submit" class="submit-btn">Get My Perfect Dish</button>
             </form>
+
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Finding your perfect dish...</p>
+            </div>
 
             <div id="results" class="results"></div>
         </div>
     </div>
 
     <script>
-        // Load menu on page load
-        async function loadMenu() {
-            try {
-                const response = await fetch('/menu');
-                const data = await response.json();
-                displayMenu(data.menu);
-            } catch (error) {
-                console.error('Error loading menu:', error);
+        // Sample menu data for demo
+        const sampleMenu = [
+            {
+                name: "Masala Omelette",
+                type: "Spicy",
+                gravy: "None",
+                description: "Fluffy eggs with onions, tomatoes, and aromatic spices. A perfect breakfast delight with a spicy kick."
+            },
+            {
+                name: "Egg Curry (Red Gravy)",
+                type: "Curry",
+                gravy: "Red",
+                description: "Hard-boiled eggs in rich, spicy tomato-based gravy with traditional Indian spices."
+            },
+            {
+                name: "Egg Fried Rice",
+                type: "Rice",
+                gravy: "None",
+                description: "Fragrant basmati rice stir-fried with scrambled eggs, vegetables, and soy sauce."
+            },
+            {
+                name: "Egg Korma",
+                type: "Curry",
+                gravy: "White",
+                description: "Eggs in creamy, mildly spiced coconut and cashew gravy. A royal treat for your taste buds."
+            },
+            {
+                name: "Egg Bhurji",
+                type: "Dry",
+                gravy: "None",
+                description: "Scrambled eggs with onions, tomatoes, and spices. Simple yet incredibly flavorful."
+            },
+            {
+                name: "Egg Biryani",
+                type: "Rice",
+                gravy: "None",
+                description: "Aromatic basmati rice layered with spiced eggs and slow-cooked to perfection."
+            },
+            {
+                name: "Boiled Egg Masala",
+                type: "Curry",
+                gravy: "Brown",
+                description: "Hard-boiled eggs in thick, flavorful onion-tomato gravy with garam masala."
+            },
+            {
+                name: "Cheese Omelette",
+                type: "Mild",
+                gravy: "None",
+                description: "Fluffy eggs filled with melted cheese. A creamy, comforting classic."
             }
+        ];
+
+        // Load menu on page load
+        function loadMenu() {
+            displayMenu(sampleMenu);
         }
 
         function displayMenu(menu) {
@@ -404,6 +641,7 @@
         function openModal() {
             document.getElementById('recommendModal').style.display = 'block';
             document.getElementById('results').innerHTML = '';
+            document.getElementById('loading').style.display = 'none';
         }
 
         function closeModal() {
@@ -418,24 +656,38 @@
             }
         }
 
-        // Form submission
+        // Form submission with demo functionality
         document.getElementById('recommendForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const formData = new FormData(e.target);
-            const data = new URLSearchParams(formData);
+            const loadingDiv = document.getElementById('loading');
+            const resultsDiv = document.getElementById('results');
+            
+            // Show loading
+            loadingDiv.style.display = 'block';
+            resultsDiv.innerHTML = '';
 
-            try {
-                const response = await fetch('/recommend', {
-                    method: 'POST',
-                    body: data
+            // Simulate API call delay
+            setTimeout(() => {
+                const formData = new FormData(e.target);
+                const foodType = formData.get('food_type');
+                const gravyColor = formData.get('gravy_color');
+                
+                // Demo recommendation logic
+                let recommendations = sampleMenu.filter(dish => {
+                    const typeMatch = foodType === 'any' || dish.type === foodType;
+                    const gravyMatch = gravyColor === 'any' || dish.gravy === gravyColor;
+                    return typeMatch && gravyMatch;
                 });
 
-                const result = await response.json();
-                displayResults(result.recommendations);
-            } catch (error) {
-                console.error('Error getting recommendations:', error);
-            }
+                // If no matches, show popular dishes
+                if (recommendations.length === 0) {
+                    recommendations = sampleMenu.slice(0, 3);
+                }
+
+                loadingDiv.style.display = 'none';
+                displayResults(recommendations);
+            }, 1500);
         });
 
         function displayResults(recommendations) {
@@ -454,21 +706,22 @@
                 'Egg Roll': '🌯',
                 'Anda Pav': '🥪',
                 'Egg Sandwich': '🥪',
-                'Egg Cutlet': '🍤',
-                'Egg Pakora': '🍘',
+                'Egg Cutlet': '🤤',
+                'Egg Pakora': '😋',
                 'Stuffed Egg Curry': '🥘'
             };
             
             if (recommendations.length === 0) {
-                resultsDiv.innerHTML = '<p>No recommendations found. Try different criteria!</p>';
+                resultsDiv.innerHTML = '<p style="text-align: center; color: #666;">No recommendations found. Try different criteria!</p>';
                 return;
             }
 
-            resultsDiv.innerHTML = '<h3>🎯 Your AI Recommendations</h3>';
+            resultsDiv.innerHTML = '<h3>🎯 Your Perfect Recommendations</h3>';
             
-            recommendations.forEach(dish => {
+            recommendations.forEach((dish, index) => {
                 const recDiv = document.createElement('div');
                 recDiv.className = 'recommendation';
+                recDiv.style.animationDelay = `${index * 0.1}s`;
                 
                 const emoji = dishEmojis[dish.name] || '🍳';
                 
