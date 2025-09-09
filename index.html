@@ -441,6 +441,24 @@
         function displayResults(recommendations) {
             const resultsDiv = document.getElementById('results');
             
+            const dishEmojis = {
+                'Masala Omelette': '🍳',
+                'Egg Curry (Red Gravy)': '🍛',
+                'Egg Curry (Yellow Gravy)': '🍜',
+                'Egg Korma': '🥘',
+                'Egg Fried Rice': '🍚',
+                'Egg Biryani': '🍛',
+                'Boiled Egg Masala': '🥚',
+                'Egg Bhurji': '🍳',
+                'Cheese Omelette': '🧀',
+                'Egg Roll': '🌯',
+                'Anda Pav': '🥪',
+                'Egg Sandwich': '🥪',
+                'Egg Cutlet': '🍤',
+                'Egg Pakora': '🍘',
+                'Stuffed Egg Curry': '🥘'
+            };
+            
             if (recommendations.length === 0) {
                 resultsDiv.innerHTML = '<p>No recommendations found. Try different criteria!</p>';
                 return;
@@ -452,8 +470,10 @@
                 const recDiv = document.createElement('div');
                 recDiv.className = 'recommendation';
                 
+                const emoji = dishEmojis[dish.name] || '🍳';
+                
                 recDiv.innerHTML = `
-                    <div class="recommendation-image">🍳</div>
+                    <div class="recommendation-image">${emoji}</div>
                     <div class="recommendation-info">
                         <div class="recommendation-name">${dish.name}</div>
                         <div class="recommendation-desc">${dish.description}</div>

@@ -1,13 +1,9 @@
 from fastapi import FastAPI, Form
-from fastapi.staticfiles import StaticFiles
 import json
 import numpy as np
 from fastapi.responses import FileResponse
 
 app = FastAPI()
-
-# Mount static files directory for images
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Load menu
 with open("menu.json", "r") as f:
