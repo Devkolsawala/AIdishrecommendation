@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Andaaz Cafe AI Recommender</title>
+</head>
+<body>
+  <h2>🍳 Andaaz Cafe – AI Dish Recommendations</h2>
+  <form action="/recommend" method="post">
+    <label>Type of Food:</label>
+    <select name="food_type">
+      <option value="any">Any</option>
+      <option value="Curry">Curry</option>
+      <option value="Rice">Rice</option>
+      <option value="Snack">Snack</option>
+      <option value="Spicy">Spicy</option>
+      <option value="Dry">Dry</option>
+      <option value="Mild">Mild</option>
+    </select><br><br>
+
+    <label>Gravy Colour:</label>
+    <select name="gravy_color">
+      <option value="any">Any</option>
+      <option value="Red">Red</option>
+      <option value="Yellow">Yellow</option>
+      <option value="Brown">Brown</option>
+      <option value="White">White</option>
+      <option value="None">None</option>
+    </select><br><br>
+
+    <label>Preference (Free Text):</label>
+    <input type="text" name="preference" placeholder="e.g. spicy curry, cheese, rice"><br><br>
+
+    <button type="submit">Get Recommendations</button>
+  </form>
+</body>
+</html>
