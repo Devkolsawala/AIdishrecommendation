@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Form
 import json
 import numpy as np
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 
@@ -8,24 +9,24 @@ app = FastAPI()
 with open("menu.json", "r") as f:
     menu = json.load(f)
 
-# Simple TF-IDF style word frequency embedding
-def text_to_vector(text, vocab):
-    words = text.lower().split()
-    vec = np.zeros(len(vocab))
-    for w in words:
-        if w in vocab:
-            vec[vocab[w]] += 1
-    return vec
-
-# Build vocabulary
+# Build vocabulary for simple TF-IDF style
 descriptions = [dish["description"] for dish in menu]
 all_words = set(" ".join(descriptions).lower().split())
 vocab = {word: i for i, word in enumerate(all_words)}
+
+def text_to_vector(text, vocab):
+    vec = np.zeros(len(vocab))
+    for word in text.lower().split():
+        if word in vocab:
+            vec[vocab[word]] += 1
+    return vec
+
 X = np.array([text_to_vector(desc, vocab) for desc in descriptions])
 
+# Serve frontend
 @app.get("/")
-def home():
-    return {"message": "Welcome to Andaaz Cafe AI Dish Recommender"}
+def index():
+    return FileResponse("index.html")
 
 @app.post("/recommend")
 def recommend(
@@ -33,10 +34,8 @@ def recommend(
     gravy_color: str = Form("any"),
     preference: str = Form("egg dish")
 ):
-    # Convert user input to vector
     query_vec = text_to_vector(preference, vocab)
 
-    # Cosine similarity
     sims = []
     for i, vec in enumerate(X):
         if np.linalg.norm(query_vec) == 0 or np.linalg.norm(vec) == 0:
