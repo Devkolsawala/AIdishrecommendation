@@ -3,7 +3,9 @@
     { "src": "app.py", "use": "@vercel/python" }
   ],
   "routes": [
+    { "src": "/menu", "dest": "app.py" },
     { "src": "/recommend", "dest": "app.py" },
+    { "src": "/static/(.*)", "dest": "/static/$1" },
     { "src": "/", "dest": "app.py" }
   ]
 }

@@ -4,104 +4,119 @@
     "name": "Masala Omelette",
     "type": "Spicy",
     "gravy": "None",
-    "description": "A fluffy omelette cooked with onions, tomatoes, chilies, and traditional Indian spices."
+    "description": "A fluffy omelette cooked with onions, tomatoes, chilies, and traditional Indian spices.",
+    "image": "/static/images/masala_omelette.jpg"
   },
   {
     "id": 2,
     "name": "Egg Curry (Red Gravy)",
     "type": "Curry",
     "gravy": "Red",
-    "description": "Boiled eggs simmered in a spicy tomato and chili-based red curry."
+    "description": "Boiled eggs simmered in a spicy tomato and chili-based red curry.",
+    "image": "/static/images/egg_curry_red.jpg"
   },
   {
     "id": 3,
     "name": "Egg Curry (Yellow Gravy)",
     "type": "Curry",
     "gravy": "Yellow",
-    "description": "Boiled eggs cooked in a turmeric-rich yellow curry with mild spices."
+    "description": "Boiled eggs cooked in a turmeric-rich yellow curry with mild spices.",
+    "image": "/static/images/egg_curry_yellow.jpg"
   },
   {
     "id": 4,
     "name": "Egg Korma",
     "type": "Curry",
     "gravy": "White",
-    "description": "Eggs cooked in a creamy cashew and yogurt-based white gravy with aromatic spices."
+    "description": "Eggs cooked in a creamy cashew and yogurt-based white gravy with aromatic spices.",
+    "image": "/static/images/egg_korma.jpg"
   },
   {
     "id": 5,
     "name": "Egg Fried Rice",
     "type": "Rice",
     "gravy": "None",
-    "description": "Fried rice tossed with scrambled eggs, soy sauce, and vegetables."
+    "description": "Fried rice tossed with scrambled eggs, soy sauce, and vegetables.",
+    "image": "/static/images/egg_fried_rice.jpg"
   },
   {
     "id": 6,
     "name": "Egg Biryani",
     "type": "Rice",
     "gravy": "Brown",
-    "description": "Aromatic rice layered with spiced boiled eggs, fried onions, and saffron."
+    "description": "Aromatic rice layered with spiced boiled eggs, fried onions, and saffron.",
+    "image": "/static/images/egg_biryani.jpg"
   },
   {
     "id": 7,
     "name": "Boiled Egg Masala",
     "type": "Dry",
     "gravy": "None",
-    "description": "Hard-boiled eggs coated in a dry, spicy onion-tomato masala."
+    "description": "Hard-boiled eggs coated in a dry, spicy onion-tomato masala.",
+    "image": "/static/images/boiled_egg_masala.jpg"
   },
   {
     "id": 8,
     "name": "Egg Bhurji",
     "type": "Spicy",
     "gravy": "None",
-    "description": "Scrambled eggs cooked with onions, tomatoes, chilies, and Indian spices."
+    "description": "Scrambled eggs cooked with onions, tomatoes, chilies, and Indian spices.",
+    "image": "/static/images/egg_bhurji.jpg"
   },
   {
     "id": 9,
     "name": "Cheese Omelette",
     "type": "Mild",
     "gravy": "None",
-    "description": "A soft omelette filled with melted cheese for a rich, creamy flavor."
+    "description": "A soft omelette filled with melted cheese for a rich, creamy flavor.",
+    "image": "/static/images/cheese_omelette.jpg"
   },
   {
     "id": 10,
     "name": "Egg Roll",
     "type": "Snack",
     "gravy": "None",
-    "description": "Paratha roll stuffed with spiced eggs, onions, and chutney."
+    "description": "Paratha roll stuffed with spiced eggs, onions, and chutney.",
+    "image": "/static/images/egg_roll.jpg"
   },
   {
     "id": 11,
     "name": "Anda Pav",
     "type": "Snack",
     "gravy": "None",
-    "description": "Mumbai-style street food with spicy egg bhurji served with buttered pav bread."
+    "description": "Mumbai-style street food with spicy egg bhurji served with buttered pav bread.",
+    "image": "/static/images/anda_pav.jpg"
   },
   {
     "id": 12,
     "name": "Egg Sandwich",
     "type": "Snack",
     "gravy": "None",
-    "description": "A toasted sandwich filled with boiled eggs, mayonnaise, and fresh vegetables."
+    "description": "A toasted sandwich filled with boiled eggs, mayonnaise, and fresh vegetables.",
+    "image": "/static/images/egg_sandwich.jpg"
   },
   {
     "id": 13,
     "name": "Egg Cutlet",
     "type": "Snack",
     "gravy": "None",
-    "description": "Crispy fried cutlets made with boiled eggs, breadcrumbs, and spices."
+    "description": "Crispy fried cutlets made with boiled eggs, breadcrumbs, and spices.",
+    "image": "/static/images/egg_cutlet.jpg"
   },
   {
     "id": 14,
     "name": "Egg Pakora",
     "type": "Snack",
     "gravy": "None",
-    "description": "Boiled egg halves dipped in chickpea flour batter and deep fried."
+    "description": "Boiled egg halves dipped in chickpea flour batter and deep fried.",
+    "image": "/static/images/egg_pakora.jpg"
   },
   {
     "id": 15,
     "name": "Stuffed Egg Curry",
     "type": "Curry",
     "gravy": "Red",
-    "description": "Eggs stuffed with spiced filling and cooked in a rich red curry."
+    "description": "Eggs stuffed with spiced filling and cooked in a rich red curry.",
+    "image": "/static/images/stuffed_egg_curry.jpg"
   }
 ]
