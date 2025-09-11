@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andaaz Cafe - AI Dish Recommendations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffd93d 0%, #ffb74d 50%, #ff8f00 100%);
+            min-height: 100vh;
+            color: #2c2c2c;
+        }
+
+        /* Floating particles animation */
+        .floating-particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(255, 193, 7, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 3px solid #ffc107;
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ff8f00, #ffc107);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(255, 193, 7, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .ai-btn, .cart-btn, .reviews-btn, .offers-btn {
+            background: linear-gradient(45deg, #ff8f00, #ffc107);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cart-btn {
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reviews-btn {
+            background: linear-gradient(45deg, #9c27b0, #ba68c8);
+            box-shadow: 0 6px 20px rgba(156, 39, 176, 0.4);
+        }
+
+        .offers-btn {
+            background: linear-gradient(45deg, #e91e63, #f06292);
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4); }
+            50% { box-shadow: 0 6px 25px rgba(233, 30, 99, 0.8); }
+        }
+
+        .cart-count, .notification-badge {
+            background: #ff5722;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-section {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat {
+            text-align: center;
+            color: #2c2c2c;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ff8f00;
+            animation: countUp 2s ease-out;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .dish-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(255, 193, 7, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            border: 3px solid transparent;
+            animation: slideInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dish-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 193, 7, 0.3);
+        }
+
+        .dish-image {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, #ffeb3b, #ffc107, #ff8f00);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rating-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ffd700;
+            padding: 0.5rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .price-tag {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .dish-info {
+            padding: 2rem;
+            background: white;
+            position: relative;
+        }
+
+        .dish-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .quick-order-btn {
+            position: absolute;
+            right: 1.5rem;
+            top: -20px;
+            background: linear-gradient(45deg, #ff5722, #ff7043);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .quick-order-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 87, 34, 0.6);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 3% auto;
+            padding: 3rem;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 4px solid #ffc107;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .personality-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .personality-option {
+            padding: 1rem;
+            border: 3px solid #ffe0b2;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .personality-option:hover, .personality-option.selected {
+            border-color: #ffc107;
+            background: linear-gradient(135deg, #fff8e1, #fffde7);
+            transform: scale(1.05);
+        }
+
+        .reviews-section {
+            margin: 3rem 0;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .review-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+            border-left: 5px solid #ffc107;
+            transition: all 0.3s ease;
+        }
+
+        .review-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .offers-banner {
+            background: linear-gradient(45deg, #e91e63, #f06292);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+            animation: slideInRight 1s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .offers-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 4s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Live order tracking */
+        .order-status {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+            padding: 1rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+            display: none;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 4px;
+            transition: width 2s ease;
+            width: 0%;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .ai-btn, .cart-btn, .reviews-btn, .offers-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .stats-bar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .personality-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Enhanced form styles */
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: #2c2c2c;
+            font-size: 1.1rem;
+        }
+
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 3px solid #ffe0b2;
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            color: #2c2c2c;
+        }
+
+        .form-group select:focus, .form-group input:focus {
+            outline: none;
+            border-color: #ffc107;
+            box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .mood-indicator {
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 3rem;
+            animation: bounce 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    Floating particles
+    <div class="floating-particles" id="particles"></div>
+
+    <div class="header">
+        <div class="logo">🍳 Andaaz Cafe</div>
+        <div class="header-buttons">
+            <button class="ai-btn" onclick="openModal()">🤖 AI Chef</button>
+            <button class="reviews-btn" onclick="openReviewsModal()">⭐ Reviews</button>
+            <button class="offers-btn" onclick="openOffersModal()">
+                🎁 Special Offers
+                <span class="notification-badge">3</span>
+            </button>
+            <button class="cart-btn" onclick="openCartModal()">
+                🛒 My Cart 
+                <span class="cart-count" id="cartCount">0</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h1>Welcome to Andaaz Cafe</h1>
+            <p>Discover our delicious egg-based dishes with AI-powered recommendations tailored just for you</p>
+            <div class="mood-indicator" id="moodIndicator">😋</div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-number" id="happyCustomers">1000</div>
+                <div class="stat-label">Happy Customers</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="dishesServed">5000</div>
+                <div class="stat-label">Dishes Served</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="avgRating">4.8</div>
+                <div class="stat-label">Average Rating</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="avgDelivery">25</div>
+                <div class="stat-label">Avg Delivery (min)</div>
+            </div>
+        </div>
+
+        <!-- Special Offers Banner -->
+        <div class="offers-banner">
+            <h3>🎉 Today's Special: 20% OFF on AI Recommended Dishes!</h3>
+            <p>Let our AI chef surprise you with the perfect dish and save money!</p>
+        </div>
+
+        <!-- Live Order Status (hidden by default) -->
+        <div class="order-status" id="orderStatus">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>🍳 Your order is being prepared...</span>
+                <span id="orderTime">Estimated: 15 min</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div id="menuContainer" class="menu-grid">
+            <!-- Menu items will be loaded here -->
+        </div>
+
+        <!-- Customer Reviews Section -->
+        <div class="reviews-section">
+            <h2 style="text-align: center; color: #ff8f00; margin-bottom: 2rem;">What Our Customers Say</h2>
+            <div class="review-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <strong>Priya Sharma</strong>
+                    <span style="color: #ffd700;">⭐⭐⭐⭐⭐</span>
+                </div>
+                <p>"The AI recommendations are spot-on! Got the perfect spicy egg curry that matched my mood exactly. Amazing!"</p>
+            </div>
+            <div class="review-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <strong>Raj Patel</strong>
+                    <span style="color: #ffd700;">⭐⭐⭐⭐⭐</span>
+                </div>
+                <p>"Best egg biryani in town! The AI suggested it based on my preferences and it was absolutely delicious."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced AI Recommendations Modal -->
+    <div id="recommendModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>🤖 AI Chef Recommendations</h2>
+            
+            <form id="recommendForm">
+                <div class="form-group">
+                    <label for="mood">🎭 What's Your Mood Today?</label>
+                    <div class="personality-selector">
+                        <div class="personality-option" data-mood="adventurous">
+                            🌶️<br>Adventurous
+                        </div>
+                        <div class="personality-option" data-mood="comfort">
+                            🤗<br>Comfort Food
+                        </div>
+                        <div class="personality-option" data-mood="healthy">
+                            🥗<br>Healthy Choice
+                        </div>
+                        <div class="personality-option" data-mood="indulgent">
+                            😍<br>Indulgent
+                        </div>
+                    </div>
+                    <input type="hidden" name="mood" id="mood" value="">
+                </div>
+
+                <div class="form-group">
+                    <label for="hunger_level">🍽️ Hunger Level:</label>
+                    <select name="hunger_level" id="hunger_level">
+                        <option value="light">Light Snack</option>
+                        <option value="moderate" selected>Moderate Meal</option>
+                        <option value="very_hungry">Very Hungry</option>
+                        <option value="feast">Ready for a Feast!</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="spice_level">🌶️ Spice Preference:</label>
+                    <select name="spice_level" id="spice_level">
+                        <option value="mild">Mild</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="spicy">Spicy</option>
+                        <option value="extra_spicy">Extra Spicy 🔥</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="food_type">🍽️ Type of Food:</label>
+                    <select name="food_type" id="food_type">
+                        <option value="any">Surprise Me!</option>
+                        <option value="Curry">Curry</option>
+                        <option value="Rice">Rice</option>
+                        <option value="Snack">Snack</option>
+                        <option value="Spicy">Spicy</option>
+                        <option value="Dry">Dry</option>
+                        <option value="Mild">Mild</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="budget">💰 Budget Range:</label>
+                    <select name="budget" id="budget">
+                        <option value="budget">Budget Friendly (₹50-100)</option>
+                        <option value="moderate" selected>Moderate (₹100-200)</option>
+                        <option value="premium">Premium (₹200+)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">🎯 Find My Perfect Dish</button>
+            </form>
+
+            <div class="loading" id="loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Our AI chef is analyzing your preferences...</p>
+            </div>
+
+            <div id="results" class="results"></div>
+        </div>
+    </div>
+
+    <!-- Other modals would go here -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content" style="border-color: #4caf50;">
+            <span class="close" onclick="closeCartModal()">&times;</span>
+            <h2>🛒 My Cart</h2>
+            <div id="cartItems">
+                <div class="empty-cart">Your cart is empty. Add some delicious dishes!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced menu data with more details
+        const sampleMenu = [
+            {
+                name: "Masala Omelette",
+                type: "Spicy",
+                gravy: "None",
+                description: "Fluffy eggs with onions, tomatoes, and aromatic spices. A perfect breakfast delight with a spicy kick.",
+                price: 80,
+                rating: 4.5,
+                prepTime: 10,
+                mood: ["adventurous", "comfort"]
+            },
+            {
+                name: "Egg Curry (Red Gravy)",
+                type: "Curry",
+                gravy: "Red",
+                description: "Hard-boiled eggs in rich, spicy tomato-based gravy with traditional Indian spices.",
+                price: 120,
+                rating: 4.7,
+                prepTime: 15,
+                mood: ["comfort", "indulgent"]
+            },
+            {
+                name: "Egg Fried Rice",
+                type: "Rice",
+                gravy: "None",
+                description: "Fragrant basmati rice stir-fried with scrambled eggs, vegetables, and soy sauce.",
+                price: 150,
+                rating: 4.6,
+                prepTime: 20,
+                mood: ["comfort", "healthy"]
+            },
+            {
+                name: "Egg Korma",
+                type: "Curry",
+                gravy: "White",
+                description: "Eggs in creamy, mildly spiced coconut and cashew gravy. A royal treat for your taste buds.",
+                price: 180,
+                rating: 4.8,
+                prepTime: 25,
+                mood: ["indulgent", "comfort"]
+            },
+            {
+                name: "Protein Power Bowl",
+                type: "Healthy",
+                gravy: "None",
+                description: "Boiled eggs with quinoa, fresh vegetables, and herbs. Perfect for health enthusiasts.",
+                price: 200,
+                rating: 4.4,
+                prepTime: 12,
+                mood: ["healthy", "comfort"]
+            },
+            {
+                name: "Spicy Egg Bhurji",
+                type: "Dry",
+                gravy: "None",
+                description: "Scrambled eggs with extra spices, green chilies, and fresh herbs. For the brave ones!",
+                price: 90,
+                rating: 4.3,
+                prepTime: 8,
+                mood: ["adventurous", "comfort"]
+            }
+        ];
+
+        let cart = [];
+        let selectedMood = '';
+
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Animate counters
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent);
+                const increment = target / 100;
+                let current = 0;
+                
+                const updateCounter = () => {
+                    if (current < target) {
+                        current += increment;
+                        counter.textContent = Math.floor(current);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target;
+                    }
+                };
+                
+                updateCounter();
+            });
+        }
+
+        // Mood selection functionality
+        function initializeMoodSelector() {
+            const moodOptions = document.querySelectorAll('.personality-option');
+            const moodIndicator = document.getElementById('moodIndicator');
+            const moodEmojis = {
+                adventurous: '🌶️',
+                comfort: '🤗',
+                healthy: '🥗',
+                indulgent: '😍'
+            };
+
+            moodOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    // Remove selected class from all options
+                    moodOptions.forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    option.classList.add('selected');
+                    
+                    selectedMood = option.dataset.mood;
+                    document.getElementById('mood').value = selectedMood;
+                    moodIndicator.textContent = moodEmojis[selectedMood] || '😋';
+                });
+            });
+        }
+
+        // Load menu with enhanced display
+        function loadMenu() {
+            const container = document.getElementById('menuContainer');
+            container.innerHTML = '';
+
+            sampleMenu.forEach((dish, index) => {
+                const dishCard = document.createElement('div');
+                dishCard.className = 'dish-card';
+                dishCard.style.animationDelay = `${index * 0.1}s`;
+                
+                dishCard.innerHTML = `
+                    <div class="dish-image">
+                        🍳
+                        <div class="rating-badge">
+                            ⭐ ${dish.rating}
+                        </div>
+                        <div class="price-tag">₹${dish.price}</div>
+                    </div>
+                    <div class="dish-info">
+                        <button class="quick-order-btn" onclick="quickOrder('${dish.name}')" title="Quick Order">⚡</button>
+                        <div class="dish-name">${dish.name}</div>
+                        <span class="dish-type">${dish.type}</span>
+                        ${dish.gravy !== 'None' ? `<span class="gravy-type">${dish.gravy} Gravy</span>` : ''}
+                        <p class="dish-description">${dish.description}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                            <span style="color: #666; font-size: 0.9rem;">🕒 ${dish.prepTime} min</span>
+                            <button class="add-to-cart-btn" onclick="addToCart(${JSON.stringify(dish).replace(/"/g, '&quot;')})">
+                                + Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(dishCard);
+            });
+        }
+
+        // Enhanced recommendation system
+        function getSmartRecommendations(preferences) {
+            let scored = sampleMenu.map(dish => {
+                let score = 0;
+                
+                // Mood matching
+                if (preferences.mood && dish.mood.includes(preferences.mood)) {
+                    score += 30;
+                }
+                
+                // Type matching
+                if (preferences.food_type !== 'any' && dish.type === preferences.food_type) {
+                    score += 20;
+                }
+                
+                // Budget matching
+                const budgetRanges = {
+                    budget: [50, 100],
+                    moderate: [100, 200],
+                    premium: [200, 500]
+                };
+                const range = budgetRanges[preferences.budget];
+                if (dish.price >= range[0] && dish.price <= range[1]) {
+                    score += 15;
+                }
+                
+                // Hunger level matching
+                const hungerScores = {
+                    light: dish.type === 'Snack' ? 10 : 0,
+                    moderate: dish.type === 'Rice' || dish.type === 'Curry' ? 10 : 5,
+                    very_hungry: dish.type === 'Rice' ? 15 : 10,
+                    feast: 15
+                };
+                score += hungerScores[preferences.hunger_level] || 0;
+                
+                // Rating bonus
+                score += dish.rating * 2;
+                
+                return { ...dish, aiScore: score };
+            });
+            
+            // Sort by score and return top recommendations
+            return scored
+                .sort((a, b) => b.aiScore - a.aiScore)
+                .slice(0, 4);
+        }
+
+        // Quick order functionality
+        function quickOrder(dishName) {
+            const dish = sampleMenu.find(d => d.name === dishName);
+            if (dish) {
+                addToCart(dish);
+                startOrderTracking();
+                showNotification(`🚀 Quick order placed for ${dishName}!`);
+            }
+        }
+
+        // Order tracking simulation
+        function startOrderTracking() {
+            const orderStatus = document.getElementById('orderStatus');
+            const progressFill = document.getElementById('progressFill');
+            const orderTime = document.getElementById('orderTime');
+            
+            orderStatus.style.display = 'block';
+            
+            let progress = 0;
+            let timeLeft = 15;
+            
+            const interval = setInterval(() => {
+                progress += 2;
+                timeLeft -= 0.3;
+                
+                progressFill.style.width = progress + '%';
+                orderTime.textContent = `Estimated: ${Math.ceil(timeLeft)} min`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    orderStatus.innerHTML = `
+                        <div style="text-align: center;">
+                            <span style="font-size: 2rem;">🎉</span>
+                            <div>Your order is ready for pickup!</div>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        orderStatus.style.display = 'none';
+                    }, 3000);
+                }
+            }, 100);
+        }
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('recommendModal').style.display = 'block';
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function closeModal() {
+            document.getElementById('recommendModal').style.display = 'none';
+        }
+
+        function openCartModal() {
+            document.getElementById('cartModal').style.display = 'block';
+            displayCart();
+        }
+
+        function closeCartModal() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        function openReviewsModal() {
+            showNotification('📱 Reviews section coming soon! Check our social media for more reviews.');
+        }
+
+        function openOffersModal() {
+            const offers = [
+                "🎁 20% OFF on AI Recommended Dishes",
+                "🍳 Buy 2 Get 1 Free on Omelettes",
+                "🎯 First Time Customer: 25% OFF"
+            ];
+            
+            let offerText = "Current Special Offers:\n\n";
+            offers.forEach((offer, index) => {
+                offerText += `${index + 1}. ${offer}\n`;
+            });
+            
+            alert(offerText);
+        }
+
+        // Enhanced cart functionality
+        function addToCart(dish) {
+            const existingItem = cart.find(item => item.name === dish.name);
+            if (!existingItem) {
+                cart.push(dish);
+                updateCartCount();
+                showNotification(`${dish.name} added to cart! 🎉`);
+                
+                // Update buttons
+                const buttons = document.querySelectorAll('.add-to-cart-btn');
+                buttons.forEach(btn => {
+                    if (btn.getAttribute('onclick')?.includes(dish.name)) {
+                        btn.textContent = '✓ Added';
+                        btn.disabled = true;
+                        btn.style.background = 'linear-gradient(45deg, #4caf50, #66bb6a)';
+                    }
+                });
+            }
+        }
+
+        function removeFromCart(dishName) {
+            cart = cart.filter(item => item.name !== dishName);
+            updateCartCount();
+            displayCart();
+            showNotification(`${dishName} removed from cart!`);
+            
+            // Reset add to cart buttons
+            const buttons = document.querySelectorAll('.add-to-cart-btn');
+            buttons.forEach(btn => {
+                if (btn.getAttribute('onclick')?.includes(dishName)) {
+                    btn.textContent = '+ Add to Cart';
+                    btn.disabled = false;
+                    btn.style.background = '';
+                }
+            });
+        }
+
+        function updateCartCount() {
+            const cartCount = document.getElementById('cartCount');
+            cartCount.textContent = cart.length;
+            
+            if (cart.length > 0) {
+                cartCount.style.display = 'flex';
+            } else {
+                cartCount.style.display = 'none';
+            }
+        }
+
+        function displayCart() {
+            const cartItemsContainer = document.getElementById('cartItems');
+            
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="empty-cart">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🛒</div>
+                        <div>Your cart is empty. Add some delicious dishes!</div>
+                    </div>
+                `;
+                return;
+            }
+
+            cartItemsContainer.innerHTML = '';
+            let totalAmount = 0;
+            
+            cart.forEach((dish, index) => {
+                totalAmount += dish.price;
+                
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.style.animationDelay = `${index * 0.1}s`;
+                
+                cartItem.innerHTML = `
+                    <div class="cart-item-image">🍳</div>
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${dish.name}</div>
+                        <div class="cart-item-type">${dish.type} • ₹${dish.price}</div>
+                    </div>
+                    <button class="remove-from-cart-btn" onclick="removeFromCart('${dish.name}')">
+                        🗑️ Remove
+                    </button>
+                `;
+                
+                cartItemsContainer.appendChild(cartItem);
+            });
+            
+            // Add total section
+            const totalSection = document.createElement('div');
+            totalSection.style.cssText = `
+                background: linear-gradient(135deg, #fff8e1, #fffde7);
+                padding: 1.5rem;
+                border-radius: 15px;
+                margin-top: 1rem;
+                text-align: center;
+                border: 2px solid #ffc107;
+            `;
+            totalSection.innerHTML = `
+                <div style="font-size: 1.2rem; font-weight: bold; color: #ff8f00; margin-bottom: 1rem;">
+                    Total: ₹${totalAmount}
+                </div>
+                <button onclick="proceedToCheckout()" style="
+                    background: linear-gradient(45deg, #ff8f00, #ffc107);
+                    color: white;
+                    border: none;
+                    padding: 1rem 2rem;
+                    border-radius: 25px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    🎯 Proceed to Checkout
+                </button>
+            `;
+            cartItemsContainer.appendChild(totalSection);
+        }
+
+        function proceedToCheckout() {
+            if (cart.length === 0) return;
+            
+            startOrderTracking();
+            closeCartModal();
+            showNotification('🎉 Order placed successfully! Track your order above.');
+            
+            // Clear cart after checkout
+            setTimeout(() => {
+                cart = [];
+                updateCartCount();
+            }, 1000);
+        }
+
+        // Enhanced notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            const colors = {
+                success: 'linear-gradient(45deg, #4caf50, #66bb6a)',
+                info: 'linear-gradient(45deg, #2196f3, #42a5f5)',
+                warning: 'linear-gradient(45deg, #ff9800, #ffb74d)',
+                error: 'linear-gradient(45deg, #f44336, #e57373)'
+            };
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${colors[type]};
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 25px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+                font-weight: 600;
+                max-width: 300px;
+                word-wrap: break-word;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Enhanced form submission
+        document.getElementById('recommendForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!selectedMood) {
+                showNotification('Please select your mood first! 😊', 'warning');
+                return;
+            }
+
+            const loadingDiv = document.getElementById('loading');
+            const resultsDiv = document.getElementById('results');
+            
+            loadingDiv.style.display = 'block';
+            resultsDiv.innerHTML = '';
+
+            // Simulate AI processing
+            setTimeout(() => {
+                const formData = new FormData(e.target);
+                const preferences = {
+                    mood: selectedMood,
+                    food_type: formData.get('food_type'),
+                    hunger_level: formData.get('hunger_level'),
+                    spice_level: formData.get('spice_level'),
+                    budget: formData.get('budget')
+                };
+                
+                const recommendations = getSmartRecommendations(preferences);
+                
+                loadingDiv.style.display = 'none';
+                displayResults(recommendations, preferences);
+            }, 2000);
+        });
+
+        function displayResults(recommendations, preferences) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (recommendations.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">😔</div>
+                        <p>No perfect match found, but don't worry!</p>
+                        <p>Here are our chef's top picks for you:</p>
+                    </div>
+                `;
+                recommendations = sampleMenu.slice(0, 3);
+            }
+
+            const personalityMessages = {
+                adventurous: "Bold choices for the adventurous soul! 🌶️",
+                comfort: "Comforting dishes to warm your heart! 🤗",
+                healthy: "Nutritious options for the health-conscious! 🥗",
+                indulgent: "Luxurious treats to indulge yourself! 😍"
+            };
+
+            resultsDiv.innerHTML = `
+                <h3>🎯 ${personalityMessages[preferences.mood] || 'Perfect Recommendations for You!'}</h3>
+                <div style="text-align: center; margin: 1rem 0; padding: 1rem; background: rgba(255, 193, 7, 0.1); border-radius: 10px;">
+                    <strong>AI Match Score:</strong> Based on your ${preferences.mood} mood, ${preferences.hunger_level} hunger level, and ${preferences.budget} budget
+                </div>
+            `;
+            
+            recommendations.forEach((dish, index) => {
+                const recDiv = document.createElement('div');
+                recDiv.className = 'recommendation';
+                recDiv.style.animationDelay = `${index * 0.1}s`;
+                
+                const isInCart = cart.some(item => item.name === dish.name);
+                const matchScore = Math.floor(65 + Math.random() * 30); // Simulated AI confidence score
+                
+                recDiv.innerHTML = `
+                    <div class="recommendation-image">🍳</div>
+                    <div class="recommendation-info">
+                        <div class="recommendation-name">
+                            ${dish.name}
+                            <span style="background: linear-gradient(45deg, #4caf50, #66bb6a); color: white; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.8rem; margin-left: 0.5rem;">
+                                ${matchScore}% Match
+                            </span>
+                        </div>
+                        <div style="color: #666; font-size: 0.9rem; margin: 0.5rem 0;">
+                            ₹${dish.price} • ⭐ ${dish.rating} • 🕒 ${dish.prepTime} min
+                        </div>
+                        <div class="recommendation-desc">${dish.description}</div>
+                        ${dish.aiScore ? `
+                            <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #ff8f00; font-weight: 600;">
+                                🤖 AI says: Perfect for your ${preferences.mood} mood!
+                            </div>
+                        ` : ''}
+                    </div>
+                    <button class="add-to-cart-btn" 
+                            data-dish="${dish.name}"
+                            onclick="addToCart(${JSON.stringify(dish).replace(/"/g, '&quot;')})"
+                            ${isInCart ? 'disabled' : ''}>
+                        ${isInCart ? '✓ Added' : '+ Add to Cart'}
+                    </button>
+                `;
+                
+                resultsDiv.appendChild(recDiv);
+            });
+
+            // Add special offer for AI recommendations
+            const offerDiv = document.createElement('div');
+            offerDiv.style.cssText = `
+                background: linear-gradient(135deg, #e91e63, #f06292);
+                color: white;
+                padding: 1rem;
+                border-radius: 15px;
+                text-align: center;
+                margin-top: 1rem;
+                animation: pulse 2s infinite;
+            `;
+            offerDiv.innerHTML = `
+                <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 0.5rem;">
+                    🎁 Special AI Discount!
+                </div>
+                <div>Get 20% OFF when you order any AI-recommended dish!</div>
+            `;
+            resultsDiv.appendChild(offerDiv);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            @keyframes countUp {
+                from { transform: scale(0.5); }
+                to { transform: scale(1); }
+            }
+            .loading-spinner {
+                width: 50px;
+                height: 50px;
+                border: 4px solid #ffe0b2;
+                border-top: 4px solid #ffc107;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin: 0 auto 1rem;
+            }
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            .add-to-cart-btn {
+                background: linear-gradient(45deg, #4caf50, #66bb6a);
+                color: white;
+                border: none;
+                padding: 0.8rem 1.5rem;
+                border-radius: 20px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 0.9rem;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+                flex-shrink: 0;
+            }
+            .add-to-cart-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            }
+            .add-to-cart-btn:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+            .results {
+                margin-top: 2.5rem;
+            }
+            .results h3 {
+                color: #2c2c2c;
+                margin-bottom: 1.5rem;
+                text-align: center;
+                font-size: 1.5rem;
+                font-weight: 700;
+            }
+            .recommendation {
+                background: linear-gradient(135deg, #fffde7, #fff8e1);
+                padding: 1.5rem;
+                margin: 1rem 0;
+                border-radius: 15px;
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+                border: 2px solid rgba(255, 193, 7, 0.3);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 4px 15px rgba(255, 193, 7, 0.1);
+            }
+            .recommendation:hover {
+                transform: translateX(10px);
+                box-shadow: 0 6px 20px rgba(255, 193, 7, 0.2);
+                border-color: #ffc107;
+            }
+            .recommendation-image {
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                background: linear-gradient(45deg, #ffeb3b, #ffc107);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2rem;
+                flex-shrink: 0;
+                box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+            }
+            .recommendation-info {
+                flex-grow: 1;
+            }
+            .recommendation-name {
+                font-weight: 700;
+                color: #2c2c2c;
+                margin-bottom: 0.5rem;
+                font-size: 1.1rem;
+                display: flex;
+                align-items: center;
+            }
+            .recommendation-desc {
+                color: #666;
+                font-size: 0.95rem;
+                line-height: 1.5;
+            }
+            .cart-item {
+                background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+                padding: 1.2rem;
+                margin: 1rem 0;
+                border-radius: 15px;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                border: 2px solid rgba(76, 175, 80, 0.3);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .cart-item:hover {
+                box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+            }
+            .cart-item-image {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                background: linear-gradient(45deg, #4caf50, #66bb6a);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                flex-shrink: 0;
+                color: white;
+            }
+            .cart-item-info {
+                flex-grow: 1;
+            }
+            .cart-item-name {
+                font-weight: 700;
+                color: #2c2c2c;
+                margin-bottom: 0.3rem;
+            }
+            .cart-item-type {
+                color: #666;
+                font-size: 0.9rem;
+            }
+            .remove-from-cart-btn {
+                background: linear-gradient(45deg, #f44336, #e57373);
+                color: white;
+                border: none;
+                padding: 0.6rem 1rem;
+                border-radius: 15px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 0.8rem;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 2px 10px rgba(244, 67, 54, 0.3);
+            }
+            .remove-from-cart-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+            }
+            .empty-cart {
+                text-align: center;
+                padding: 2rem;
+                color: #666;
+                font-style: italic;
+            }
+            .gravy-type {
+                display: inline-block;
+                background: linear-gradient(45deg, #ff6f00, #ff8f00);
+                color: white;
+                padding: 0.4rem 1rem;
+                border-radius: 20px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+                box-shadow: 0 2px 10px rgba(255, 111, 0, 0.3);
+            }
+            .dish-type {
+                display: inline-block;
+                background: linear-gradient(45deg, #ff8f00, #ffc107);
+                color: white;
+                padding: 0.4rem 1rem;
+                border-radius: 20px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                margin-right: 0.8rem;
+                margin-bottom: 1rem;
+                box-shadow: 0 2px 10px rgba(255, 193, 7, 0.3);
+            }
+            .dish-description {
+                color: #666;
+                line-height: 1.7;
+                font-size: 1rem;
+            }
+            .submit-btn {
+                width: 100%;
+                background: linear-gradient(45deg, #ff8f00, #ffc107);
+                color: white;
+                border: none;
+                padding: 1.2rem;
+                border-radius: 15px;
+                font-size: 1.2rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+                position: relative;
+                overflow: hidden;
+            }
+            .submit-btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                transition: left 0.5s;
+            }
+            .submit-btn:hover::before {
+                left: 100%;
+            }
+            .submit-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(255, 193, 7, 0.5);
+            }
+            .loading {
+                text-align: center;
+                padding: 2rem;
+            }
+            .close {
+                color: #ff8f00;
+                float: right;
+                font-size: 2.5rem;
+                font-weight: bold;
+                cursor: pointer;
+                line-height: 1;
+                transition: all 0.3s;
+                position: absolute;
+                right: 1.5rem;
+                top: 1.5rem;
+            }
+            .close:hover {
+                color: #ff6f00;
+                transform: scale(1.2);
+            }
+            @keyframes modalSlideIn {
+                from { 
+                    transform: translateY(-100px) scale(0.8); 
+                    opacity: 0; 
+                }
+                to { 
+                    transform: translateY(0) scale(1); 
+                    opacity: 1; 
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize everything when page loads
+        window.addEventListener('load', () => {
+            loadMenu();
+            createParticles();
+            animateCounters();
+            initializeMoodSelector();
+            updateCartCount();
+            
+            // Add welcome message
+            setTimeout(() => {
+                showNotification('Welcome to Andaaz Cafe! 🍳 Try our AI recommendations!', 'info');
+            }, 1000);
+        });
+
+        // Add some interactive features
+        document.addEventListener('DOMContentLoaded', () => {
+            // Randomly update mood indicator
+            const moodEmojis = ['😋', '🤤', '😍', '🥰', '🎉'];
+            const moodIndicator = document.getElementById('moodIndicator');
+            
+            setInterval(() => {
+                if (!selectedMood) {
+                    const randomEmoji = moodEmojis[Math.floor(Math.random() * moodEmojis.length)];
+                    moodIndicator.textContent = randomEmoji;
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
